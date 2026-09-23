@@ -31,7 +31,6 @@ share/python-wheels/
 *.swp
 *.swo
 *~
-.DS_Store
 
 # macOS
 __MACOSX/
@@ -45,4 +44,3 @@ results/
 *.csv
 *.png
 *.jpg
-*.pdf
