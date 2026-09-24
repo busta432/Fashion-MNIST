@@ -21,12 +21,26 @@ HISTORY_DIR = os.path.join(RESULTS_DIR, "history")
 LOG_PATH = os.path.join(RESULTS_DIR, "experiment_log.csv")
 
 LOG_FIELDS = [
-    "run_id", "timestamp", "model", "activation", "nhidden", "nhidden2",
+    "run_id", "timestamp", "model", "dataset", "activation", "nhidden", "nhidden2",
     "residual", "lr", "batch_size", "epochs", "val_ratio", "seed",
     "best_epoch", "best_val_accuracy", "best_test_accuracy",
     "final_train_loss", "final_val_loss", "final_test_loss",
     "training_time_sec", "plot_path",
 ]
+
+
+def dataset_tag(train_file):
+    """
+    Short label for the training file, used in run_ids and the log so that
+    e.g. the same network trained on the full vs. pruned datasets doesn't
+    produce indistinguishable run_ids/log rows.
+    """
+    name = os.path.basename(str(train_file)).lower()
+    if "10percent" in name:
+        return "10pct"
+    if "50percent" in name:
+        return "50pct"
+    return "full"
 
 
 def ensure_dirs():
@@ -79,6 +93,12 @@ def build_run_id(model_name, args):
     if getattr(args, "residual", False):
         parts.append("residual")
 
+    train_file = getattr(args, "train_file", None)
+    if train_file:
+        tag_ds = dataset_tag(train_file)
+        if tag_ds != "full":
+            parts.append(tag_ds)
+
     parts.append(f"lr{args.lr}")
     parts.append(f"bs{args.batch_size}")
     parts.append(f"ep{args.epochs}")
@@ -122,6 +142,7 @@ def log_experiment(run_id, model_name, args, training_history, best_test_accurac
         "run_id": run_id,
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "model": model_name,
+        "dataset": dataset_tag(getattr(args, "train_file", "")),
         "activation": getattr(args, "activation", "") if is_mlp else "",
         "nhidden": getattr(args, "nhidden", "") if is_mlp else "",
         "nhidden2": getattr(args, "nhidden2", "") if is_mlp3 else "",

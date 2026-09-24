@@ -1,0 +1,74 @@
+C:\Users\Daniel Busing\Desktop\Education\Griffith Uni\2026 School Year\2802ICT - Intelligent Systems\Assignment2\train.py:407: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+  plt.show()
+============================================================
+FASHION-MNIST NEURAL NETWORK TRAINING
+============================================================
+Model: MLP3
+Input size: 784
+Hidden size 1: 30
+Activation function: sigmoid
+Hidden size 2: 30
+Residual connections: True
+Activation function: sigmoid
+Output size: 10
+Epochs: 20
+Learning rate: 0.01
+Batch size: 4
+Data directory: ./data
+Validation ratio: 0.2
+Random seed: 42
+============================================================
+Loading Fashion-MNIST dataset...
+Training data shape: (30000, 784), Labels shape: (30000,)
+Test data shape: (10000, 784), Labels shape: (10000,)
+Number of classes: 10
+
+Creating validation split with 20% of training data...
+  Class 0: 3000 -> Train: 2400, Val: 600
+  Class 1: 3000 -> Train: 2400, Val: 600
+  Class 2: 3000 -> Train: 2400, Val: 600
+  Class 3: 3000 -> Train: 2400, Val: 600
+  Class 4: 3000 -> Train: 2400, Val: 600
+  Class 5: 3000 -> Train: 2400, Val: 600
+  Class 6: 3000 -> Train: 2400, Val: 600
+  Class 7: 3000 -> Train: 2400, Val: 600
+  Class 8: 3000 -> Train: 2400, Val: 600
+  Class 9: 3000 -> Train: 2400, Val: 600
+
+Final split:
+  Training set: 24000 samples
+  Validation set: 6000 samples
+
+Created Three-Layer MLP
+
+Starting training for 20 epochs...
+Learning rate: 0.01, Batch size: 4
+Epoch   1/20 | Train Loss: 1.4399 | Val Loss: 0.9402 | Test Loss: 0.9380 | Train Acc: 61.90% | Val Acc: 62.02% | Test Acc: 61.62% | Time: 4.62s
+         *** New best validation accuracy! ***
+Epoch   5/20 | Train Loss: 0.4418 | Val Loss: 0.5228 | Test Loss: 0.4947 | Train Acc: 82.80% | Val Acc: 81.32% | Test Acc: 82.45% | Time: 4.48s
+         *** New best validation accuracy! ***
+Epoch  10/20 | Train Loss: 0.3432 | Val Loss: 0.4541 | Test Loss: 0.4226 | Train Acc: 85.71% | Val Acc: 83.70% | Test Acc: 85.27% | Time: 4.47s
+         *** New best validation accuracy! ***
+Epoch  15/20 | Train Loss: 0.3054 | Val Loss: 0.4217 | Test Loss: 0.3950 | Train Acc: 87.12% | Val Acc: 85.05% | Test Acc: 85.68% | Time: 4.54s
+         *** New best validation accuracy! ***
+Epoch  20/20 | Train Loss: 0.2772 | Val Loss: 0.4261 | Test Loss: 0.4011 | Train Acc: 87.28% | Val Acc: 84.70% | Test Acc: 85.22% | Time: 4.52s
+
+Model selection results:
+  Best validation accuracy: 85.15% (epoch 19)
+  Test accuracy of best model: 85.76%
+
+============================================================
+TRAINING COMPLETED
+============================================================
+Total training time: 90.21 seconds
+Final training loss: 0.2772
+Final validation loss: 0.4261
+Final test loss: 0.4011
+Final training accuracy: 87.28%
+Best validation accuracy: 85.15% (epoch 19)
+Test accuracy of best model: 85.76%
+
+Training history plot saved as 'results\plots\three-layer_mlp_sigmoid_h30_h2-30_residual_50pct_lr0.01_bs4_ep20_seed42_20260924-133312_training_history.png'
+Run history saved as 'results\history\three-layer_mlp_sigmoid_h30_h2-30_residual_50pct_lr0.01_bs4_ep20_seed42_20260924-133312.json'
+Experiment logged to 'results\experiment_log.csv' (run_id: three-layer_mlp_sigmoid_h30_h2-30_residual_50pct_lr0.01_bs4_ep20_seed42_20260924-133312)
+============================================================

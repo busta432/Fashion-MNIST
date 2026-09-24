@@ -1,0 +1,67 @@
+C:\Users\Daniel Busing\Desktop\Education\Griffith Uni\2026 School Year\2802ICT - Intelligent Systems\Assignment2\train.py:407: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+  plt.show()
+============================================================
+FASHION-MNIST NEURAL NETWORK TRAINING
+============================================================
+Model: LINEAR
+Input size: 784
+Output size: 10
+Epochs: 20
+Learning rate: 0.01
+Batch size: 4
+Data directory: ./data
+Validation ratio: 0.2
+Random seed: 42
+============================================================
+Loading Fashion-MNIST dataset...
+Training data shape: (30000, 784), Labels shape: (30000,)
+Test data shape: (10000, 784), Labels shape: (10000,)
+Number of classes: 10
+
+Creating validation split with 20% of training data...
+  Class 0: 3000 -> Train: 2400, Val: 600
+  Class 1: 3000 -> Train: 2400, Val: 600
+  Class 2: 3000 -> Train: 2400, Val: 600
+  Class 3: 3000 -> Train: 2400, Val: 600
+  Class 4: 3000 -> Train: 2400, Val: 600
+  Class 5: 3000 -> Train: 2400, Val: 600
+  Class 6: 3000 -> Train: 2400, Val: 600
+  Class 7: 3000 -> Train: 2400, Val: 600
+  Class 8: 3000 -> Train: 2400, Val: 600
+  Class 9: 3000 -> Train: 2400, Val: 600
+
+Final split:
+  Training set: 24000 samples
+  Validation set: 6000 samples
+
+Created Linear Classifier
+
+Starting training for 20 epochs...
+Learning rate: 0.01, Batch size: 4
+Epoch   1/20 | Train Loss: 0.5510 | Val Loss: 0.5817 | Test Loss: 0.5597 | Train Acc: 81.22% | Val Acc: 80.48% | Test Acc: 81.02% | Time: 2.09s
+         *** New best validation accuracy! ***
+Epoch   5/20 | Train Loss: 0.3640 | Val Loss: 0.4846 | Test Loss: 0.4653 | Train Acc: 84.87% | Val Acc: 83.53% | Test Acc: 84.25% | Time: 2.12s
+Epoch  10/20 | Train Loss: 0.3369 | Val Loss: 0.4875 | Test Loss: 0.4634 | Train Acc: 85.28% | Val Acc: 83.72% | Test Acc: 84.33% | Time: 2.05s
+Epoch  15/20 | Train Loss: 0.3231 | Val Loss: 0.4554 | Test Loss: 0.4352 | Train Acc: 86.73% | Val Acc: 84.33% | Test Acc: 85.26% | Time: 2.04s
+         *** New best validation accuracy! ***
+Epoch  20/20 | Train Loss: 0.3145 | Val Loss: 0.4757 | Test Loss: 0.4495 | Train Acc: 86.44% | Val Acc: 83.68% | Test Acc: 84.89% | Time: 2.12s
+
+Model selection results:
+  Best validation accuracy: 84.50% (epoch 19)
+  Test accuracy of best model: 85.40%
+
+============================================================
+TRAINING COMPLETED
+============================================================
+Total training time: 41.79 seconds
+Final training loss: 0.3145
+Final validation loss: 0.4757
+Final test loss: 0.4495
+Final training accuracy: 86.44%
+Best validation accuracy: 84.50% (epoch 19)
+Test accuracy of best model: 85.40%
+
+Training history plot saved as 'results\plots\linear_classifier_50pct_lr0.01_bs4_ep20_seed42_20260924-132003_training_history.png'
+Run history saved as 'results\history\linear_classifier_50pct_lr0.01_bs4_ep20_seed42_20260924-132003.json'
+Experiment logged to 'results\experiment_log.csv' (run_id: linear_classifier_50pct_lr0.01_bs4_ep20_seed42_20260924-132003)
+============================================================

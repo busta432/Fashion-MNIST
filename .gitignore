@@ -40,7 +40,3 @@ __MACOSX/
 # Project specific
 IMPLEMENTATION_PLAN.md
 output/
-results/
-*.csv
-*.png
-*.jpg

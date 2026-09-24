@@ -7,6 +7,7 @@ Exploration of the Fashion-MNIST dataset with four architectures built from scra
 - `nn.py` — model definitions (`LinearClassifier`, `TwoLayerMLP`, `ThreeLayerMLP`)
 - `train.py` — data loading, training loop, evaluation, and plotting
 - `experiment_utils.py` — experiment tracking helpers (unique run IDs, collision-safe filenames, CSV/JSON logging)
+- `run_experiments.py` — runs the full assignment experiment matrix unattended (see below)
 
 ## Usage
 
@@ -25,3 +26,16 @@ Every run is assigned a unique `run_id` from its model type and hyperparameters 
 - `results/plots/<run_id>_training_history.png` — loss/accuracy curves, only saved with `--plot`
 - `results/history/<run_id>.json` — full per-epoch training history
 - `results/experiment_log.csv` — one row per run (hyperparameters + final metrics), appended automatically so runs can be compared across a whole sweep
+
+## Running the full experiment sweep
+
+`run_experiments.py` runs every config required by the assignment (12 baseline runs across 4 networks x 3 datasets, a 5-point learning-rate sweep, and a 4-point batch-size sweep on the residual three-layer MLP) — 19 unique runs after deduplicating configs shared across those groups. Each run's console output (epoch progress, timing, any numpy RuntimeWarnings) is streamed live and also saved under `results/logs/`.
+
+```
+python run_experiments.py --dry-run     # preview the 19 runs without training
+python run_experiments.py               # run everything not already in experiment_log.csv
+python run_experiments.py --only b      # just the learning-rate sweep (a, b, or c)
+python run_experiments.py --limit 1     # smoke-test on a single run first
+```
+
+Re-running the script skips any config already logged in `results/experiment_log.csv`, so it's safe to stop and resume (use `--rerun` to force redoing everything). Budget several hours for the full sweep — the residual three-layer MLP on the full dataset takes ~10-15 min per run, and `--batch_size 1` runs are the slowest (~40+ min); start it and let it run in the background rather than waiting on it.

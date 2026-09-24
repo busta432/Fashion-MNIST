@@ -1,0 +1,83 @@
+C:\Users\Daniel Busing\AppData\Roaming\Python\Python314\site-packages\autograd\numpy\numpy_vjps.py:127: RuntimeWarning: overflow encountered in square
+  lambda ans, x, y: unbroadcast_f(y, lambda g: -g * x / y**2),
+C:\Users\Daniel Busing\AppData\Roaming\Python\Python314\site-packages\autograd\tracer.py:93: RuntimeWarning: overflow encountered in exp
+  return f_raw(*args, **kwargs)
+C:\Users\Daniel Busing\Desktop\Education\Griffith Uni\2026 School Year\2802ICT - Intelligent Systems\Assignment2\train.py:127: RuntimeWarning: invalid value encountered in divide
+  return exp_z / anp.sum(exp_z, axis=1, keepdims=True)
+C:\Users\Daniel Busing\AppData\Roaming\Python\Python314\site-packages\autograd\tracer.py:93: RuntimeWarning: invalid value encountered in divide
+  return f_raw(*args, **kwargs)
+C:\Users\Daniel Busing\Desktop\Education\Griffith Uni\2026 School Year\2802ICT - Intelligent Systems\Assignment2\train.py:407: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+  plt.show()
+============================================================
+FASHION-MNIST NEURAL NETWORK TRAINING
+============================================================
+Model: MLP3
+Input size: 784
+Hidden size 1: 30
+Activation function: sigmoid
+Hidden size 2: 30
+Residual connections: True
+Activation function: sigmoid
+Output size: 10
+Epochs: 20
+Learning rate: 100.0
+Batch size: 4
+Data directory: ./data
+Validation ratio: 0.2
+Random seed: 42
+============================================================
+Loading Fashion-MNIST dataset...
+Training data shape: (60000, 784), Labels shape: (60000,)
+Test data shape: (10000, 784), Labels shape: (10000,)
+Number of classes: 10
+
+Creating validation split with 20% of training data...
+  Class 0: 6000 -> Train: 4800, Val: 1200
+  Class 1: 6000 -> Train: 4800, Val: 1200
+  Class 2: 6000 -> Train: 4800, Val: 1200
+  Class 3: 6000 -> Train: 4800, Val: 1200
+  Class 4: 6000 -> Train: 4800, Val: 1200
+  Class 5: 6000 -> Train: 4800, Val: 1200
+  Class 6: 6000 -> Train: 4800, Val: 1200
+  Class 7: 6000 -> Train: 4800, Val: 1200
+  Class 8: 6000 -> Train: 4800, Val: 1200
+  Class 9: 6000 -> Train: 4800, Val: 1200
+
+Final split:
+  Training set: 48000 samples
+  Validation set: 12000 samples
+
+Created Three-Layer MLP
+
+Starting training for 20 epochs...
+Learning rate: 100.0, Batch size: 4
+Epoch   1/20 | Train Loss: nan | Val Loss: nan | Test Loss: nan | Train Acc: 10.00% | Val Acc: 10.00% | Test Acc: 10.00% | Time: 8.78s
+         *** New best validation accuracy! ***
+Epoch   5/20 | Train Loss: nan | Val Loss: nan | Test Loss: nan | Train Acc: 10.00% | Val Acc: 10.00% | Test Acc: 10.00% | Time: 8.73s
+         *** New best validation accuracy! ***
+Epoch  10/20 | Train Loss: nan | Val Loss: nan | Test Loss: nan | Train Acc: 10.00% | Val Acc: 10.00% | Test Acc: 10.00% | Time: 8.73s
+         *** New best validation accuracy! ***
+Epoch  15/20 | Train Loss: nan | Val Loss: nan | Test Loss: nan | Train Acc: 10.00% | Val Acc: 10.00% | Test Acc: 10.00% | Time: 8.75s
+         *** New best validation accuracy! ***
+Epoch  20/20 | Train Loss: nan | Val Loss: nan | Test Loss: nan | Train Acc: 10.00% | Val Acc: 10.00% | Test Acc: 10.00% | Time: 8.76s
+         *** New best validation accuracy! ***
+
+Model selection results:
+  Best validation accuracy: 10.00% (epoch 1)
+  Test accuracy of best model: 10.00%
+
+============================================================
+TRAINING COMPLETED
+============================================================
+Total training time: 174.92 seconds
+Final training loss: nan
+Final validation loss: nan
+Final test loss: nan
+Final training accuracy: 10.00%
+Best validation accuracy: 10.00% (epoch 1)
+Test accuracy of best model: 10.00%
+
+Training history plot saved as 'results\plots\three-layer_mlp_sigmoid_h30_h2-30_residual_lr100.0_bs4_ep20_seed42_20260924-134407_training_history.png'
+Run history saved as 'results\history\three-layer_mlp_sigmoid_h30_h2-30_residual_lr100.0_bs4_ep20_seed42_20260924-134407.json'
+Experiment logged to 'results\experiment_log.csv' (run_id: three-layer_mlp_sigmoid_h30_h2-30_residual_lr100.0_bs4_ep20_seed42_20260924-134407)
+============================================================
