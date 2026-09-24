@@ -9,6 +9,7 @@ import os
 import copy
 
 from nn import LinearClassifier, TwoLayerMLP, ThreeLayerMLP
+from experiment_utils import build_run_id, get_unique_filepath, save_history_json, log_experiment, PLOTS_DIR, ensure_dirs # Import Helper Functions for Experiment Logging
 
 
 def create_validation_split(X_train, y_train, val_ratio=0.2, random_seed=42):
@@ -343,7 +344,7 @@ def train_model(model, X_train, y_train, X_val, y_val, X_test, y_test, epochs, l
     return model, training_history, best_test_accuracy
 
 
-def plot_training_history(train_losses, val_losses, test_losses, train_accuracies, val_accuracies, test_accuracies, model_name, best_epoch=None):
+def plot_training_history(train_losses, val_losses, test_losses, train_accuracies, val_accuracies, test_accuracies, model_name, best_epoch=None, run_id=None):
     """
     Plot training history including validation curves
     Args:
@@ -351,6 +352,10 @@ def plot_training_history(train_losses, val_losses, test_losses, train_accuracie
         train_accuracies, val_accuracies, test_accuracies: Accuracy values over epochs
         model_name: Name of the model for plot title
         best_epoch: Epoch with best validation performance (optional)
+        run_id: unique identifier for this run, used to build a collision-free
+                filename (falls back to model_name alone if not given)
+    Returns:
+        Path the plot was saved to.
     """
     plt.figure(figsize=(15, 5))
     
@@ -394,8 +399,14 @@ def plot_training_history(train_losses, val_losses, test_losses, train_accuracie
     plt.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig(f'{model_name.lower().replace(" ", "_")}_training_history.png', dpi=150, bbox_inches='tight')
+
+    ensure_dirs()
+    filename_base = run_id if run_id else model_name.lower().replace(" ", "_")
+    plot_path = get_unique_filepath(os.path.join(PLOTS_DIR, f"{filename_base}_training_history.png"))
+    plt.savefig(plot_path, dpi=150, bbox_inches='tight')
     plt.show()
+
+    return plot_path
 
 
 def main():
@@ -482,7 +493,11 @@ def main():
         model_name = "Three-Layer MLP"
     
     print(f"\nCreated {model_name}")
-    
+
+    # Unique id for this run (hyperparameters + timestamp) - keeps plots,
+    # history files, and log rows from colliding across experiments
+    run_id = build_run_id(model_name, args)
+
     # Train the model
     start_time = time.time()
     model, training_history, best_test_accuracy = train_model(
@@ -504,17 +519,24 @@ def main():
     print(f"Test accuracy of best model: {best_test_accuracy:.2f}%")
     
     # Plot training history
+    plot_path = ""
     if args.plot:
-        plot_training_history(
+        plot_path = plot_training_history(
             training_history['train_losses'], training_history['val_losses'], training_history['test_losses'],
-            training_history['train_accuracies'], training_history['val_accuracies'], training_history['test_accuracies'], 
-            model_name, training_history['best_epoch']
+            training_history['train_accuracies'], training_history['val_accuracies'], training_history['test_accuracies'],
+            model_name, training_history['best_epoch'], run_id
         )
-        plt.savefig(f"{model_name.lower().replace(' ', '_')}_training_history.png")
         plt.close()
-    
-        print(f"\nTraining history plot saved as '{model_name.lower().replace(' ', '_')}_training_history.png'")
-    
+
+        print(f"\nTraining history plot saved as '{plot_path}'")
+
+    # Track this experiment: append a summary row to results/experiment_log.csv
+    # and save the full per-epoch history, regardless of whether --plot was used
+    history_path = save_history_json(training_history, run_id)
+    log_path = log_experiment(run_id, model_name, args, training_history, best_test_accuracy, training_time, plot_path)
+    print(f"Run history saved as '{history_path}'")
+    print(f"Experiment logged to '{log_path}' (run_id: {run_id})")
+
     print("="*60)
 
 
