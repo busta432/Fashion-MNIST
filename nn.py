@@ -92,13 +92,14 @@ class TwoLayerMLP:
     Two-layer Multi-Layer Perceptron with one hidden layer
     Network structure: [784, 30, 10]
     """
-    def __init__(self, n_input, n_hidden, n_output):
+    def __init__(self, n_input, n_hidden, n_output, activation='sigmoid'):
         """
         Initialize MLP parameters
         Args:
             n_input: Number of input features (784)
             n_hidden: Number of hidden units (30)
             n_output: Number of output classes (10)
+            activation: Activation function for hidden layer ('sigmoid' or 'relu')
         """
         self.n_input = n_input
         self.n_hidden = n_hidden
@@ -200,7 +201,7 @@ class TwoLayerMLP:
     
     def get_params(self):
         """Get model parameters as a flat array"""
-        # TODO: Concatenate all model parameters into a single flat array
+        # Complete : Concatenate all model parameters into a single flat array
         #
         # This function is needed for automatic differentiation (autograd).
         # The grad() function requires all parameters to be in a single array.
@@ -210,8 +211,13 @@ class TwoLayerMLP:
         # 2. b1: bias vector of first layer (shape: n_hidden)
         # 3. W2: weight matrix of second layer (shape: n_hidden × n_output)  
         # 4. b2: bias vector of second layer (shape: n_output)
+
+
+        #autograd differentites w.r.t. a single array of parameters, so we need to flatten and concatenate all parameters into a single array.
+        # The order here must match upacking order W1, b1, W2, b2 in set_params() method.
+        return anp.concatenate([self.W1.flatten(), self.b1.flatten(),
+                                self.W2.flatten(), self.b2.flatten()])
         
-        raise NotImplementedError
     
     def set_params(self, params):
         """Set model parameters from a flat array"""
@@ -238,7 +244,7 @@ class ThreeLayerMLP:
     Three-layer Multi-Layer Perceptron with two hidden layers
     Network structure: [784, 30, 30, 10] (default)
     """
-    def __init__(self, n_input, n_hidden1, n_hidden2, n_output, use_residual=False):
+    def __init__(self, n_input, n_hidden1, n_hidden2, n_output, use_residual=False, activation = 'sigmoid'):
         """
         Initialize MLP parameters
         Args:
@@ -247,12 +253,14 @@ class ThreeLayerMLP:
             n_hidden2: Number of second hidden layer units (30)
             n_output: Number of output classes (10)
             use_residual: Whether to use residual connections
+            activation: Activation function for hidden layers ('sigmoid' or 'relu')
         """
         self.n_input = n_input
         self.n_hidden1 = n_hidden1
         self.n_hidden2 = n_hidden2
         self.n_output = n_output
         self.use_residual = use_residual
+        self.activation_function = activation #activation goes last so the existing postional calls keep working
         
         # Check if residual connection is possible (hidden layers must have same size)
         if use_residual and n_hidden1 != n_hidden2:
@@ -274,12 +282,25 @@ class ThreeLayerMLP:
     def sigmoid(self, z):
         """Sigmoid activation function"""
         return 1 / (1 + anp.exp(-z))
-    
+
+    #Added Helper functions for ReLU and Activation selection
+    def relu(self, z):
+        """ReLU activation function"""
+        return anp.maximum(0, z)
+
+    def activate(self, z):
+        """Activation function for hidden layers (can be sigmoid or ReLU)"""
+        if self.activation_function == 'relu':
+            return self.relu(z)
+        return self.sigmoid(z)
+        
     def softmax(self, z):
         """Softmax activation function"""
         exp_z = anp.exp(z)
         return exp_z / anp.sum(exp_z, axis=1, keepdims=True)
-    
+
+
+    # Need to add some comments to explain the forward pass and residual connections in my own words here not just 
     def forward(self, X):
         """
         Forward pass through the network
@@ -288,14 +309,14 @@ class ThreeLayerMLP:
         Returns:
             Output logits of shape (batch_size, n_output)
         """
-        # TODO: Implement the forward pass for a three-layer neural network
+        # COMPLETE : Implement the forward pass for a three-layer neural network
         # 
         # This network has the structure: Input -> Hidden1 -> Hidden2 -> Output
         # Network topology: [784] -> [30] -> [30] -> [10] (for Fashion-MNIST)
         # With optional residual connections between hidden layers
         
         # First layer: linear transformation + sigmoid activation
-        # TODO: Implement z1 = X @ W1 + b1, then h1 = sigmoid(z1)
+        # COMPLETE: Implement z1 = X @ W1 + b1, then h1 = sigmoid(z1)
         # 
         # Step-by-step:
         # 1. Linear transformation: z1 = X @ W1 + b1
@@ -305,10 +326,12 @@ class ThreeLayerMLP:
         #    - z1 will have shape (batch_size, n_hidden1) = (batch_size, 30)
         # 2. Apply sigmoid activation: h1 = sigmoid(z1)
         
-        raise NotImplementedError
+        z1 = anp.dot(X, self.W1) + self.b1 # Linear transformation for first layer
+        h1 = self.activate(z1) # Apply activation function (sigmoid or ReLU) to get hidden layer output
+
         
         # Second layer: linear transformation + sigmoid activation
-        # TODO: Implement z2 = h1 @ W2 + b2, then h2_raw = sigmoid(z2)
+        # COMPLETE: Implement z2 = h1 @ W2 + b2, then h2_raw = sigmoid(z2)
         #
         # Step-by-step:
         # 1. Linear transformation: z2 = h1 @ W2 + b2
@@ -318,10 +341,11 @@ class ThreeLayerMLP:
         #    - z2 will have shape (batch_size, n_hidden2) = (batch_size, 30)
         # 2. Apply sigmoid activation: h2_raw = sigmoid(z2)
         
-        raise NotImplementedError
-        
+        z2 = anp.dot(h1, self.W2) + self.b2 # Linear transformation for second layer
+        h2_raw = self.activate(z2) # Apply activation function (sigmoid or ReLu)
+
         # Apply residual connection if enabled
-        # TODO: Implement residual connection logic
+        # COMPLETE: Implement residual connection logic
         #
         # Residual connections help with gradient flow in deep networks.
         # The idea is to add the input of a layer to its output: h2 = h2_raw + h1
@@ -333,15 +357,14 @@ class ThreeLayerMLP:
         #   h2 = h2_raw       # Use normal activation without skip connection
         
         if self.use_residual:
-            raise NotImplementedError  # Residual connection: add previous layer output
+            h2 = h2_raw + h1  # Residual connection: add previous layer output
         else:
-            raise NotImplementedError
-        
+            h2 = h2_raw       # No residual connection: use normal activation
+
         # Third layer: linear transformation (output layer)
-        # TODO: Implement z3 = h2 @ W3 + b3
+        # COMPLETE: Implement z3 = h2 @ W3 + b3
         
-        raise NotImplementedError
-        
+        z3 = anp.dot(h2, self.W3) + self.b3
         return z3
     
     def predict(self, X):
@@ -358,12 +381,15 @@ class ThreeLayerMLP:
     
     def get_params(self):
         """Get model parameters as a flat array"""
-        # TODO: Concatenate all model parameters into a single flat array
+        # COMPLETE: Concatenate all model parameters into a single flat array
         #
         # This function is needed for automatic differentiation (autograd).
         # The grad() function requires all parameters to be in a single array.
         
-        raise NotImplementedError
+        # Flatten all six parameters (W1, b1, W2, b2, W3, b3) and concatenate them into a single array
+        return anp.concatenate([self.W1.flatten(), self.b1.flatten(),
+                                self.W2.flatten(), self.b2.flatten(),
+                                self.W3.flatten(), self.b3.flatten()])
     
     def set_params(self, params):
         """Set model parameters from a flat array"""
