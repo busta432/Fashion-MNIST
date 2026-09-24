@@ -138,7 +138,7 @@ def cross_entropy_loss(y_pred, y_true):
     # Apply softmax to get probabilities
     probs = softmax(y_pred)
     
-    # TODO: Compute cross-entropy loss with softmax
+    # COMPLETE: Compute cross-entropy loss with softmax
     #
     # Cross-entropy loss measures the difference between predicted probabilities
     # and true labels. It's commonly used for classification problems.
@@ -157,8 +157,9 @@ def cross_entropy_loss(y_pred, y_true):
     # If y_true = [[0, 1, 0], [1, 0, 0]] and probs = [[0.1, 0.8, 0.1], [0.9, 0.05, 0.05]]
     # Then loss = -mean([log(0.8), log(0.9)]) = -mean([-0.223, -0.105]) = 0.164
     
-    raise NotImplementedError
-    
+    elementwise = y_true * anp.log(probs + 1e-12) #Step 2: Add small epsilon to avoid log(0)
+    per_sample = anp.sum(elementwise, axis=1) #Step 3: Sum across classes
+    loss = -anp.mean(per_sample) #Step 4: Apply negative sign and take mean
     return loss
 
 
@@ -257,9 +258,9 @@ def train_model(model, X_train, y_train, X_val, y_val, X_test, y_test, epochs, l
             
             # Compute gradients
             grad_fn_batch = grad(batch_loss_fn)
-            gradients = grad_fn_batch(params)
+            gradients = grad_fn_batch(params) #Step 1: Compute gradients of loss w.r.t. parameters
             
-            # TODO: Update parameters using gradient descent
+            # COMPLETE: Update parameters using gradient descent
             #
             # Gradient descent updates parameters by moving in the opposite direction
             # of the gradient (steepest descent). This minimizes the loss function.
@@ -271,8 +272,8 @@ def train_model(model, X_train, y_train, X_val, y_val, X_test, y_test, epochs, l
             #
             # Note: 'learning_rate' is passed as a parameter to this function
             
-            raise NotImplementedError
-            model.set_params(new_params)
+            new_params = params - (learning_rate * gradients) #Step 2 & 3: Update parameters using gradient descent & store in new_params
+            model.set_params(new_params) #Update model parameters with new_params
             
             # Compute loss for recording with updated parameters
             logits = model.forward(X_batch)
@@ -413,6 +414,9 @@ def main():
                        help='Number of output classes (default: 10)')
     parser.add_argument('--residual', action='store_true',
                        help='Use residual connections for 3-layer MLP')
+    parser.add_argument('--activation', type=str, default='sigmoid',
+                        choices = ['sigmoid', 'relu'], 
+                        help='Hidden layer activation function for MLP. Default is Sigmoid but can also choose ReLU.') # Should come back and add tanh() and GeLU()
     parser.add_argument('--epochs', type=int, default=20,
                        help='Number of training epochs (default: 20)')
     parser.add_argument('--lr', type=float, default=0.01,
@@ -442,9 +446,11 @@ def main():
     print(f"Input size: {args.ninput}")
     if args.model in ['mlp', 'mlp3']:
         print(f"Hidden size 1: {args.nhidden}")
+        print(f"Activation function: {args.activation}")
     if args.model == 'mlp3':
         print(f"Hidden size 2: {args.nhidden2}")
         print(f"Residual connections: {args.residual}")
+        print(f"Activation function: {args.activation}")
     print(f"Output size: {args.noutput}")
     print(f"Epochs: {args.epochs}")
     print(f"Learning rate: {args.lr}")
@@ -469,10 +475,10 @@ def main():
         model = LinearClassifier(args.ninput, args.noutput)
         model_name = "Linear Classifier"
     elif args.model == 'mlp':
-        model = TwoLayerMLP(args.ninput, args.nhidden, args.noutput)
+        model = TwoLayerMLP(args.ninput, args.nhidden, args.noutput, activation=args.activation) #added activation argument to constructor
         model_name = "Two-Layer MLP"
     elif args.model == 'mlp3':
-        model = ThreeLayerMLP(args.ninput, args.nhidden, args.nhidden2, args.noutput, args.residual)
+        model = ThreeLayerMLP(args.ninput, args.nhidden, args.nhidden2, args.noutput, args.residual, activation=args.activation) #added activiation arguement to constuctor
         model_name = "Three-Layer MLP"
     
     print(f"\nCreated {model_name}")

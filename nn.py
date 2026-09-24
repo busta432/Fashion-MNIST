@@ -113,6 +113,7 @@ class TwoLayerMLP:
         # Second layer: hidden to output
         self.W2 = np.random.randn(n_hidden, n_output) * 0.01
         self.b2 = np.zeros(n_output)
+        self.activation_function = activation # Store the activation function choice for hidden layer
     
     def sigmoid(self, z):
         """Sigmoid activation function"""
@@ -122,7 +123,7 @@ class TwoLayerMLP:
         """ReLU activation function"""
         return anp.maximum(0, z)
 
-    def activation(self, z):
+    def activate(self, z):
         """Activation function for hidden layer (can be sigmoid or ReLU)"""
         if self.activation_function == 'relu':
             return self.relu(z)
