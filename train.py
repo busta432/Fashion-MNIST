@@ -158,9 +158,13 @@ def cross_entropy_loss(y_pred, y_true):
     # If y_true = [[0, 1, 0], [1, 0, 0]] and probs = [[0.1, 0.8, 0.1], [0.9, 0.05, 0.05]]
     # Then loss = -mean([log(0.8), log(0.9)]) = -mean([-0.223, -0.105]) = 0.164
     
+    # y_true is one-hot encoded so multiplying zeroes out every class except the true one
+    # each row's sum is just log(probability the model gave the correct class).
+
     elementwise = y_true * anp.log(probs + 1e-12) #Step 2: Add small epsilon to avoid log(0)
     per_sample = anp.sum(elementwise, axis=1) #Step 3: Sum across classes
-    loss = -anp.mean(per_sample) #Step 4: Apply negative sign and take mean
+    loss = -anp.mean(per_sample) #Step 4: Apply negative sign and take mean. We negate so a confident correct prediction gives a loss near 0.
+
     return loss
 
 
@@ -273,6 +277,9 @@ def train_model(model, X_train, y_train, X_val, y_val, X_test, y_test, epochs, l
             #
             # Note: 'learning_rate' is passed as a parameter to this function
             
+            # We minus the product of learning rate and gradients from the current parameters to get new parameters.
+            # We minus as we want to move in the opposite direction (downhill) of the steepest gradient.
+
             new_params = params - (learning_rate * gradients) #Step 2 & 3: Update parameters using gradient descent & store in new_params
             model.set_params(new_params) #Update model parameters with new_params
             

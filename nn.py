@@ -52,9 +52,7 @@ class LinearClassifier:
         #anp.dot (not np.dot) so autograd records the operation for gradient compuation. 
         # b has shape n_output, and will be broadcasted to match the shape of the result of anp.dot(X, self.W)
         return anp.dot(X, self.W) + self.b 
-        
-        raise NotImplementedError # I Think this can be removed since we have implemented the forward pass.
-    
+            
     def sigmoid(self, z):
         """Sigmoid activation function"""
         return 1 / (1 + anp.exp(-z))
@@ -184,7 +182,7 @@ class TwoLayerMLP:
         
         # Layer 2: No Activation - Raw Logits and Softmax applied inside the cross-entropy loss function
         # Apply SoftMax here aswell would flatten the gradient and make it harder to compute the loss. So we will apply softmax in the loss function.
-        z2 = anp.dot(h1, self.W2) + self.b2 #
+        z2 = anp.dot(h1, self.W2) + self.b2 # Linear transformation for output layer -> raw logits
 
         return z2
     
@@ -301,7 +299,6 @@ class ThreeLayerMLP:
         return exp_z / anp.sum(exp_z, axis=1, keepdims=True)
 
 
-    # Need to add some comments to explain the forward pass and residual connections in my own words here not just 
     def forward(self, X):
         """
         Forward pass through the network
@@ -326,6 +323,8 @@ class ThreeLayerMLP:
         #    - b1 has shape (n_hidden1,) = (30,)
         #    - z1 will have shape (batch_size, n_hidden1) = (batch_size, 30)
         # 2. Apply sigmoid activation: h1 = sigmoid(z1)
+
+        # We use autograd throughout so grad() can trace the whole computation graph.
         
         z1 = anp.dot(X, self.W1) + self.b1 # Linear transformation for first layer
         h1 = self.activate(z1) # Apply activation function (sigmoid or ReLU) to get hidden layer output
@@ -357,6 +356,12 @@ class ThreeLayerMLP:
         # Else:
         #   h2 = h2_raw       # Use normal activation without skip connection
         
+        # The output of hidden layer 1 is added straight onto the output of hidden 
+        # layer 2. The add happens AFTER the activation, so layer 2 only has
+        # to learn a correction on top of h1 instead of a whole new representation.
+
+        # Shape must match for element-wise addition this is handled in the constructor.
+
         if self.use_residual:
             h2 = h2_raw + h1  # Residual connection: add previous layer output
         else:
@@ -365,6 +370,8 @@ class ThreeLayerMLP:
         # Third layer: linear transformation (output layer)
         # COMPLETE: Implement z3 = h2 @ W3 + b3
         
+        # No activation function is applied just a linear transformation to get the final logits for classification.
+    
         z3 = anp.dot(h2, self.W3) + self.b3
         return z3
     
@@ -387,7 +394,8 @@ class ThreeLayerMLP:
         # This function is needed for automatic differentiation (autograd).
         # The grad() function requires all parameters to be in a single array.
         
-        # Flatten all six parameters (W1, b1, W2, b2, W3, b3) and concatenate them into a single array
+        # Flatten all six parameters (W1, b1, W2, b2, W3, b3) and concatenate them into a single array as required by autograd.
+        # Order must match the unpacking order in set_params() method.
         return anp.concatenate([self.W1.flatten(), self.b1.flatten(),
                                 self.W2.flatten(), self.b2.flatten(),
                                 self.W3.flatten(), self.b3.flatten()])
